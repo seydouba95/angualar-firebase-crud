@@ -20,7 +20,7 @@ export class DataService {
     return this.angularFireStore.collection('students').snapshotChanges();
   }
 
-  //delete student
+  //delete student 
   deleteStudent(student: Student){
     return this.angularFireStore.doc('/students/' + student.id).delete();
 

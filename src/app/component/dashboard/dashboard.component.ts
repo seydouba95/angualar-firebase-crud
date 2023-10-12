@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Student } from 'src/app/model/student';
 import { AuthService } from 'src/app/shared/auth.service';
 import { DataService } from 'src/app/shared/data.service';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,13 +15,6 @@ export class DashboardComponent implements OnInit {
 
   
 studentsList : Student[] = [];
-studentObj: Student = {
-  id: '',
-  first_name: '',
-  last_name: '',
-  email: '',
-  phone: ''
-};
 
 
 
@@ -28,6 +23,7 @@ first_name: string = '';
 last_name: string = '';
 email: string = '';
 phone: string = '';
+imageUrl: string = '';
 
 newFirstName: string = '';
 newLastName: string = '';
@@ -39,14 +35,17 @@ isEditing = false;
 
 editingStudent: Student | null = null ; // Variable pour stocker l'étudiant en cours d'édition
 
+selectedImage: File | null = null;
 
-  constructor(private auth: AuthService, private data: DataService) { 
+  constructor(private firestore: AngularFirestore, private storage: AngularFireStorage,
+private auth: AuthService, private data: DataService) { 
    
   }
 
   ngOnInit(): void {
     this.getAllStudents();
   }
+
 
   //logout function
  // register(){
@@ -68,32 +67,64 @@ alert('Error while fetching student data');
   
 
   //reset form
-  resetForm() {
-    this.id = '';
-    this.first_name = '';
-    this.last_name = '';
-    this.email = '';
-    this.phone = '';
+ resetForm() {
+     this.first_name =  '';
+      this.last_name = '' ;
+      this.phone= '';
+      this.email = '';
+      this.imageUrl = '' ;
+    this.selectedImage = null;
   }
   //add student
-  addStudent(){
-    this.isEditing = false; // Désactivez le mode d'édition
 
-    if (this.first_name == '' || this.last_name == '' || this.phone == '' || this.email == '') {
-      alert('Fill all input fields');
-      return;
-    }
+onImageSelected(event: any) {
+  const file: File = event.target.files[0];
 
-    this.studentObj.id = '';
-    this.studentObj.email = this.email;
-    this.studentObj.first_name = this.first_name;
-    this.studentObj.last_name = this.last_name;
-    this.studentObj.phone = this.phone;
+  if (file) {
+    const storagePath = `student-images/${file.name}`;
+    const storageRef = this.storage.ref(storagePath);
+    const uploadTask = storageRef.put(file);
 
-    this.data.addStudent(this.studentObj);
-    this.resetForm();
-
+    uploadTask.then((snapshot) => {
+      snapshot.ref.getDownloadURL().then((downloadURL) => {
+        this.imageUrl = downloadURL; // Stockez l'URL de l'image
+      });
+    });
   }
+}
+
+
+    
+ 
+  addStudent() {
+    const newStudent: Student = {
+       id: '',
+      first_name: this.first_name,
+      last_name: this.last_name,
+      email: this.email,
+      phone: this.phone,
+      imageUrl: this.imageUrl // Utilisez l'URL de l'image téléchargée
+    };
+    this.data.addStudent(newStudent);
+
+  // Réinitialisez les champs du formulaire et l'URL de l'image
+   this.resetForm();
+
+   // Vous pouvez également réinitialiser l'élément input de type "file" si nécessaire
+    const fileInput = document.getElementById('imageUrl') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  }
+  
+
+  
+
+
+  
+
+
+
 
 
   editStudent(student: Student) {
@@ -121,7 +152,7 @@ alert('Error while fetching student data');
       email: this.newEmail,
       phone: this.newPhone,
     };
-  
+    
     this.data.updateStudent(this.editingStudent.id, updatedData)
       .then(() => {
         // Mise à jour réussie

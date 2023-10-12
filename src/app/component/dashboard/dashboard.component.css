@@ -1,0 +1,7 @@
+/* styles.css ou styles.scss */
+.small-image {
+    width: 50px;
+    /* Largeur souhaitée */
+    height: 50px;
+    /* Hauteur souhaitée */
+}
