@@ -37,7 +37,7 @@ export class AuthService {
         alert(err.message);
         this.router.navigate(['/register']);
        }
-     )
+     ) 
   }
 
   //logout method 

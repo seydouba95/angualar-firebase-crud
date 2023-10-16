@@ -26,3 +26,31 @@ h1 {
 .darken-grey-text {
     color: #2E2E2E;
 }
+
+a:hover{
+  color: blue;
+}
+
+.user-icon {
+    font-weight: bold;
+    font-size: 18px;
+    color: #007bff;
+    /* Couleur du texte */
+    text-decoration: none;
+}
+
+
+
+/* Styles pour réduire la taille de police des éléments du menu déroulant */
+.dropdown-item {
+    font-size: 14px;
+    /* Ajustez la taille de la police selon vos préférences */
+}
+
+/* Styles pour réduire la taille de police des éléments du menu déroulant au survol */
+.dropdown-item:hover {
+    font-size: 14px;
+    cursor: pointer;
+       
+    /* Ajustez la taille de la police selon vos préférences */
+}

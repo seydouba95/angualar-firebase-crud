@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { User } from '@angular/fire/compat/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -25,9 +26,11 @@ studentForm: FormGroup;
 
   filteredStudents: Student[] = [];
   
+  user: User | null;
+
   
   constructor(private data: DataService, private fb: FormBuilder,
-  private router: Router, private authServ: AuthService) { 
+  private router: Router, private authServ: AuthService,private afAuth: AngularFireAuth) { 
     this.studentForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['',Validators.required]
@@ -43,10 +46,18 @@ studentForm: FormGroup;
   ngOnInit(): void {
     //this.getStudents();
     this.getAllStudents();
-      this.filterStudents();
-
+    this.filterStudents();
+    this.getUsers();
     
+  
   }
+
+  getUsers() {
+        this.afAuth.user.subscribe((user) => {
+      this.user = user;
+    });
+  }
+  
 
  
   //ajout etudiant
