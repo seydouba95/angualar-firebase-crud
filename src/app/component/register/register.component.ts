@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/shared/auth.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from 'src/app/utils/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -7,31 +8,28 @@ import { AuthService } from 'src/app/shared/auth.service';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
-  email: string = '';
-  password: string = '';
+  registerForm: FormGroup;
 
-  constructor(private auth: AuthService) { }
+  constructor(private fb: FormBuilder, private auth: AuthService) {
+    
+    this.registerForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required]
+    });
+   }
 
   ngOnInit(): void {
   }
 
-  register(){
-    if (this.email == '') {
-      alert('Please enter email');
-      return;
+  onSubmit() {
+    
+    if (this.registerForm.valid) {
+       
+      const email = this.registerForm.get('email')?.value;
+      const password = this.registerForm.get('password')?.value;
+    // Appelez ici la méthode d'inscription de votre service AuthService
+      this.auth.register(email,password);
     }
-
-    if (this.password == '') {
-      alert('Please enter password');
-      return;
-    }
-    this.auth.register(this.email,this.password);
-
-    this.email = '' ; 
-    this.password = '' ;
-
-
-
   }
 
 }

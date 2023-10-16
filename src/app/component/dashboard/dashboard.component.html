@@ -1,148 +1,123 @@
-<!-- Formulaire pour l'ajout d'étudiant -->
 
-<div *ngIf="!isEditing">
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
+        <a class="navbar-brand" href="/dashboard">Student Management</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/dashboard">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Dropdown
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+                </li>
+            </ul>
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
 
-        <div class="row">
-            <div class="col-md-4 mt-5">
-                <div class="card border-0 shadow p-3">
-                    <div class="form-floating mb-3 tetx-center">
-                        <h5 class="text-center text-warning">{{ isEditing ? 'Update Student' : 'Add Student' }}</h5>
-                    </div>
-                     <div class="form-floating mb-3">
-                           <input type="file" class="form-control" id="imageUrl"  (change)="onImageSelected($event)" required>
+   
+</nav>
 
-                      <label for="imageUrl">Image de l'étudiant</label>
-                    </div>
-                     
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="firstName" name="firstname" [(ngModel)]="first_name" required>
-                            <label for="firstname">First name</label>
+<div class="container">   
+    <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
+        <div class="container-fluid">
+        
+            <div class="row">
+                <div class="col-md-4 mt-5">
+                    <div class="card border-0 shadow p-3">
+                        <div class="form-floating mb-3 tetx-center">
+                            <h5 class="text-center text-warning">Add Student</h5>
                         </div>
+                       
+        
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="lastName" name="lastName" [(ngModel)]="last_name" required>
+                            <input   type="text" class="form-control" id="firstName" name="firstName" formControlName="firstName">
+                            <label for="firstName">First name</label>
+                                    <small *ngIf="studentForm.get('firstName')?.hasError('required')" id="firstName" class="form-text text-danger">Required
+                                        Field.</small>
+
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="lastName" name="lastName" formControlName="lastName">
                             <label for="lastName">Last name</label>
+                                    <small *ngIf="studentForm.get('lastName')?.hasError('required')" id="lastName" class="form-text text-danger">Required
+                                        Field.</small>
+
                         </div>
-                        <div class="form-floating mb-3">
-                            <input type="email" class="form-control" id="email" name="email" [(ngModel)]="email" required>
-                            <label for="email">Email address</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="phone" name="phone" [(ngModel)]="phone" required>
-                            <label for="phone">phone</label>
-                        </div>
-                        <button type="button" class="btn btn-outline-success" (click)="isEditing ? updateStudent() : addStudent()">{{ isEditing ? 'Update Student' : 'Add Student' }}</button>
+                      
+                        <button type="submit" [disabled]="studentForm.invalid"  class="btn btn-outline-success">Add Student</button>
                     </div>
-                   
-            </div>
-            <div class="col-md-8 mt-2">
-                <h5 class="text-danger"> Student List</h5>
-                <div class="card p-3 shadow">
-                    <div class="card-body">
-                        <table class="table table-hover">
-                            <thead>
-                              <tr>
-                                <th scope="col">Image</th>
-                                <th scope="col">First name</th>
-                                <th scope="col">Last name</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">phone</th>
-                                <th scope="col">Action</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr *ngFor="let student of studentsList">
-                              <td ><img [src]="student.imageUrl" alt="Image" class="small-image">
-</td>
-                                <td >{{student.first_name}}</td>
-                                <td>{{student.last_name}}</td>
-                                <td>{{student.email}}</td>
-                                <td>{{student.phone}}</td>
-                                <td>
-                                    <button class="btn btn-outline-danger" (click)="deleteStudent(student)">Delete</button>
-                                </td>
-                                <td>
-                                    <button class="btn btn-outline-info" (click)="editStudent(student)">Edit</button>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                                  
-                                 
+        
+                </div>
+                <div class="col-md-8 mt-2">
+                    <h5 class="text-danger"> Student List</h5>
+
+            <br>
+                    <div class="card p-3 shadow">
+                        <div class="card-body">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">First name</th>
+                                        <th scope="col">Last name</th>
+                                         <th scope="col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let s of filteredStudents |  paginate: { itemsPerPage: 2, currentPage: p }; index as i">
+                                        <td>{{s.firstName}}
+                                        </td>
+                                       <td>{{s.lastName}}</td>
+                                        <td>
+                                            <button class="btn btn-outline-danger" (click)="deleteStudentother(s.id,s)">Delete</button>
+                                        </td>
+                                        <td>
+                                       <button       (click)="updateStudent(s)" class="btn btn-outline-info">Edit</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                <pagination-controls (pageChange)="p = $event"></pagination-controls>
+
+        
+                        </div>
                     </div>
                 </div>
             </div>
+        
         </div>
+    </form>
+
     
-    </div>
 
-  </div>
-
+</div>
 
 
-<!-- Formulaire pour la mise à jour d'étudiant -->
-<div *ngIf="isEditing">
-    <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-4 mt-5">
-            <div class="card border-0 shadow p-3">
-              <div class="form-floating mb-3 tetx-center">
-                <h5 class="text-center text-warning">{{ isEditing ? 'Update Student' : 'Add Student' }}</h5>
-              </div>
-              <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="firstName" name="firstname" [(ngModel)]="newFirstName" *ngIf="isEditing">
-                <label for="firstname">First name</label>
-              </div>
-              <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="lastName" name="lastName" [(ngModel)]="newLastName" *ngIf="isEditing">
-                <label for="lastName">Last name</label>
-              </div>
-              <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="email" name="email" [(ngModel)]="newEmail" *ngIf="isEditing">
-                <label for="email">Email address</label>
-              </div>
-              <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="phone" name="phone" [(ngModel)]="newPhone" *ngIf="isEditing">
-                <label for="phone">phone</label>
-              </div>
-              <button type="button" class="btn btn-outline-success" (click)="isEditing ? updateStudent() : addStudent()">
-                {{ isEditing ? 'Update Student' : 'Add Student' }}
-              </button>
-            </div>
-          </div>
-          <div class="col-md-8 mt-2">
-            <h5 class="text-danger"> Student List</h5>
-            <div class="card p-3 shadow">
-              <div class="card-body">
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th scope="col">First name</th>
-                      <th scope="col">Last name</th>
-                      <th scope="col">Email</th>
-                      <th scope="col">phone</th>
-                      <th scope="col">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let student of studentsList">
-                      <td >{{newFirstName}}</td>
-                      <td>{{student.last_name}}</td>
-                      <td>{{student.email}}</td>
-                      <td>{{student.phone}}</td>
-                      <td>
-                        <button class="btn btn-outline-danger" (click)="deleteStudent(student)">Delete</button>
-                      </td>
-                      <td>
-                                    <button class="btn btn-outline-info" (click)="editStudent(student)">Edit</button>
-                                </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-  </div>
+
+

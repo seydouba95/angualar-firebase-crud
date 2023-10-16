@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from 'src/app/shared/auth.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from 'src/app/utils/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -7,36 +8,31 @@ import { AuthService } from 'src/app/shared/auth.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
-  email: string = '';
-  password: string = '';
+  loginForm: FormGroup;
   
-  constructor(private auth: AuthService) { }
+  constructor(private fb: FormBuilder,private auth : AuthService) { 
+
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required,Validators.email]],
+      password: ['',Validators.required]
+})      
+  }
 
   ngOnInit(): void {
   }
 
-  login(){
-    if (this.email == '') {
-      alert('Please enter email');
-      return;
+
+  onSubmit() {
+    if (this.loginForm.valid) {
+
+      const email = this.loginForm.get('email')?.value;
+      const password = this.loginForm.get('password')?.value;
+
+      this.auth.login(email, password);
+      
     }
-
-    if (this.password == '') {
-      alert('Please enter password');
-      return;
+  }
+    googleInSign() {
+    this.auth.googleInSign();
     }
-    this.auth.login(this.email,this.password);
-
-    this.email = '' ; 
-    this.password = '' ;
-
-
-
-  }
-
-  signInWithGoogle() {
-    this.auth.googleSignIn();
-  }
-
 }
