@@ -24,12 +24,7 @@
             User Account
         </a>
         <ul class="dropdown-menu dropdown-menu-right bg-body-tertiary" style="min-width: 120px;">
-            <li>
-                <a class="dropdown-item text-center text-warning" href="#">
-                    Profile
-                </a>
-            </li>
-              <hr>
+           
             <li>
           
                 <a class="dropdown-item text-center text-warning" (click)="logout()">
@@ -48,12 +43,7 @@
    
 </nav>
 
-<div *ngIf="user">
-  <h2>Informations de l'utilisateur</h2>
-  <p>Nom: {{ user.displayName }}</p>
-  <p>Email: {{ user.email }}</p>
-  <!-- Ajoutez d'autres informations ici -->
-</div>
+
 
 <br> <br> <br>
 <div class="container">   
@@ -92,11 +82,10 @@
                 <div class="col-md-8 mt-2">
                     <h5 class="text-danger"> Student List</h5>
 
-          
-             <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button (click)="  filterStudents()" class="btn btn-outline-success" type="submit">Search</button>
-            </form>
+           <form class="d-flex" role="search">
+  <input   (input)="filterStudents()" class="form-control me-2" type="search" placeholder="Search" aria-label="Search" [(ngModel)]="searchTerm" name="searchTerm">
+</form>
+         
               <br>
                     <div class="card p-3 shadow">
                         <div class="card-body">

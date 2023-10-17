@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from '@angular/fire/compat/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -24,9 +23,9 @@ studentForm: FormGroup;
   searchTerm: string = '';
   isEditing = false;
 
-  filteredStudents: Student[] = [];
+  filteredStudents: Student[] = this.studentsList;
   
-  user: User | null;
+ students: any[]; 
 
   
   constructor(private data: DataService, private fb: FormBuilder,
@@ -45,18 +44,18 @@ studentForm: FormGroup;
 
   ngOnInit(): void {
     //this.getStudents();
-    this.getAllStudents();
-    this.filterStudents();
-    this.getUsers();
+  
+
+     this.data.getAllStudents().subscribe((students) => {
+       this.studentsList = students;
+      this.filteredStudents = students; // Initialisez filteredStudents avec la liste complète au départ
+
+    });
     
   
   }
 
-  getUsers() {
-        this.afAuth.user.subscribe((user) => {
-      this.user = user;
-    });
-  }
+ 
   
 
  
@@ -135,14 +134,19 @@ studentForm: FormGroup;
   filterStudents() {
 
   // Assurez-vous que searchTerm est défini
-  this.filteredStudents = this.studentsList.filter(student => {
-    return student.firstName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      student.lastName.toLowerCase().includes(this.searchTerm.toLowerCase());
-  });
-
+   if (this.searchTerm.trim() === '') {
+      this.filteredStudents = this.studentsList; // Réinitialisez la liste complète lorsque la recherche est vide
+    } else {
+      this.filteredStudents = this.studentsList.filter(student => {
+        // Appliquez votre logique de filtrage ici, par exemple, recherche dans les prénoms et noms
+        return student.firstName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+               student.lastName.toLowerCase().includes(this.searchTerm.toLowerCase());
+      });
+    }
+  }
     
 
-  }
+  
 
   logout() {
     this.authServ.logout();
