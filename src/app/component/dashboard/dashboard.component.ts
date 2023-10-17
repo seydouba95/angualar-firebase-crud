@@ -23,9 +23,8 @@ studentForm: FormGroup;
   searchTerm: string = '';
   isEditing = false;
 
-  filteredStudents: Student[] = this.studentsList;
+  filteredStudents: Student[] = [];
   
- students: any[]; 
 
   
   constructor(private data: DataService, private fb: FormBuilder,
@@ -43,14 +42,10 @@ studentForm: FormGroup;
 
 
   ngOnInit(): void {
-    //this.getStudents();
-  
-
-     this.data.getAllStudents().subscribe((students) => {
-       this.studentsList = students;
-      this.filteredStudents = students; // Initialisez filteredStudents avec la liste complète au départ
-
-    });
+    
+ //  this.getStudents();
+   this.getAllStudents();
+ this.filterStudents();
     
   
   }
@@ -84,6 +79,8 @@ studentForm: FormGroup;
   getStudents() {
     this.data.getAllStudents().subscribe((data) => {
       this.studentsList = data;
+    this.filteredStudents = data; // Initialisez filteredStudents avec la liste complète au départ
+
     }, (err) => {
       console.log('Error while fetching student data');
     });
@@ -92,12 +89,16 @@ studentForm: FormGroup;
   //get all students snapshotchanges
   getAllStudents() {
     this.data.getStudents().subscribe((data) => {
-      this.filteredStudents = data.map((item : any) => {
+      this.studentsList = data.map((item : any) => {
         const student = item.payload.doc.data() as Student;
         console.log(item.payload.doc);
-      student.id = item.payload.doc.id; // Ajoutez l'ID du document
+        student.id = item.payload.doc.id; // Ajoutez l'ID du document
+         // Initialisez filteredStudents avec la liste complète au départ
+        
       return student;
-    });
+      });
+      // Après avoir récupéré les données, initialisez filteredStudents avec la liste complète
+    this.filteredStudents = this.studentsList;
     }, (err) => {
       console.log('Error while fetching student data');
     });
@@ -125,6 +126,7 @@ studentForm: FormGroup;
 
 
   //update student 
+   //update student 
   updateStudent(student: Student) {
     const studentId = student.id;
     this.router.navigate(['/update-student', studentId]);

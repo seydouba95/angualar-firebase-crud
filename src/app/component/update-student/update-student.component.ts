@@ -19,7 +19,9 @@ studentId: string | null; // Gardez à l'esprit que cela pourrait être null
   p: number = 1;
           
   constructor(private route: ActivatedRoute,private studentService: DataService,private router: Router) {
-  
+   this.route.params.subscribe(params => {
+    this.studentId = params['id'];
+  });
 }
 
   ngOnInit() {
@@ -34,6 +36,7 @@ studentId: string | null; // Gardez à l'esprit que cela pourrait être null
     }
 
     this.getAllStudents();
+    
    
   }
 
